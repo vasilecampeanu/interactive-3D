@@ -25,11 +25,11 @@
         // -------------------
 
         // Path to our model
-        const MODEL_PATH = 'https://s3-us-west-2.amazonaws.com/s.cdpn.io/1376484/stacy_lightweight.glb';
+        const MODEL_PATH = 'https://d1a370nemizbjq.cloudfront.net/c9588aef-8f4a-465a-8b21-c40c8b7e689f.glb';
 
         // Canvas style
         const canvas = document.querySelector('#character-animation');
-        const backgroundColor = 0xf1f1f1;
+        const backgroundColor = 0x0E141B;
 
         // ------------------------
         // Let's init ThreeJS scene
@@ -74,15 +74,15 @@
         // -------------------
         // Load model textures
         // -------------------
-        let stacy_txt = new THREE.TextureLoader().load('https://s3-us-west-2.amazonaws.com/s.cdpn.io/1376484/stacy.jpg');
+        // let stacy_txt = new THREE.TextureLoader().load('https://s3-us-west-2.amazonaws.com/s.cdpn.io/1376484/stacy.jpg');
 
-        stacy_txt.flipY = false; // we flip the texture so that its the right way up
+        // stacy_txt.flipY = false; // we flip the texture so that its the right way up
         
-        const stacy_mtl = new THREE.MeshPhongMaterial({
-            map: stacy_txt,
-            color: 0xffffff,
-            skinning: true
-        });
+        // const stacy_mtl = new THREE.MeshPhongMaterial({
+        //     map: stacy_txt,
+        //     color: 0xffffff,
+        //     skinning: true
+        // });
 
         // --------------------
         // Load character model
@@ -93,23 +93,16 @@
         loader.load (
             MODEL_PATH,
             function(gltf) {
-
-                model = gltf.scene;
-                let fileAnimations = gltf.animations;
-
-                model.traverse(o => {
-                    if (o.isMesh) {
-                        o.castShadow = true;
-                        o.receiveShadow = true;
-                        o.material = stacy_mtl;
-                    }
-                });
-                
+                model = gltf.scene.children[0];
                 model.scale.set(7, 7, 7);
                 
                 model.position.y = -11;
+                
+                for (let i = 0; i <= 9; i++) {
+                    model.children[i].material.metalness = 0;
+                }
 
-                scene.add(model);
+                scene.add(gltf.scene);
             },
             undefined, // We don't need this function
             function(error) {
@@ -128,7 +121,7 @@
         // Hemisphere light
         // The hemisphere light is just casting white light, and its intensity is at 0.61.
         // We also set its position 50 units above our center point
-        let hemiLight = new THREE.HemisphereLight(0xffffff, 0xffffff, 0.61);
+        let hemiLight = new THREE.HemisphereLight(0xffffff, 0xffffff, 0.5);
         hemiLight.position.set(0, 50, 0);
         
         // Add hemisphere light to scene
@@ -137,7 +130,7 @@
         // Directional light
         // This enable sto cast a shadow
         let d = 8.25;
-        let dirLight = new THREE.DirectionalLight(0xffffff, 0.54);
+        let dirLight = new THREE.DirectionalLight(0xffffff, 2.94);
         dirLight.position.set(-8, 12, 8);
         dirLight.castShadow = true;
         dirLight.shadow.mapSize = new THREE.Vector2(1024, 1024);
@@ -157,9 +150,9 @@
 
         // Floor
         let floorGeometry = new THREE.PlaneGeometry(5000, 5000, 1, 1);
-        let floorMaterial = new THREE.MeshPhongMaterial({
-            color: 0xeeeeee,
-            shininess: 0,
+        let floorMaterial = new THREE.MeshBasicMaterial({
+            color: 0x0E141B,
+            shininess: 1,
         });
 
         let floor = new THREE.Mesh(floorGeometry, floorMaterial);
